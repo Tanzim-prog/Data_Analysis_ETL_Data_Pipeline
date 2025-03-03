@@ -7,10 +7,10 @@ def insert_data_into_mysql():
     
     # Connect to MySQL
     db_connection = mysql.connector.connect(
-        host="local host name",
-        user="mysql user name",
-        password="mysql password",
-        database="database name"
+        host="127.0.0.1",
+        user="root",
+        password="Sanx12345#",
+        database="growth_data"
     )
     cursor = db_connection.cursor()
 

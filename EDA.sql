@@ -1,23 +1,3 @@
--- Table Creation --
-CREATE TABLE users(
-	user_id INT(10) NOT NULL PRIMARY KEY,
-    install_date DATE,
-    last_active_date DATE,
-    subscription_type VARCHAR(10),
-    country VARCHAR(20),
-    total_sessions INT(10),
-    page_views INT(10),
-    download_clicks INT(10),
-    activation_status INT(10),
-    days_active INT(10),
-    pro_upgrade_date DATE,
-    plan_type VARCHAR(20),
-    monthly_revenue INT(10),
-    churned INT(10)
-    );
- 
- -- EDA --
- 
 SELECT *
 FROM growth_data.users;
 
@@ -70,3 +50,13 @@ SELECT user_id, last_active_date, churned
 FROM users 
 WHERE churned = 1 AND last_active_date > DATE_SUB(CURDATE(), INTERVAL 30 DAY);
 
+SELECT subscription_type,
+COUNT(subscription_type) total_user,
+ROUND(100 * COUNT(*) / (SELECT COUNT(*) FROM users), 2) user_percentage
+FROM users
+GROUP BY 1;
+
+SELECT MIN(install_date) start_install_date, MAX(install_date) end_install_date,
+	   MIN(last_active_date) start_last_active_date, MAX(last_active_date) end_last_active_date,
+       MIN(pro_upgrade_date) start_pro_upgrade_date, MAX(pro_upgrade_date) end_pro_upgrade_date
+FROM users;
