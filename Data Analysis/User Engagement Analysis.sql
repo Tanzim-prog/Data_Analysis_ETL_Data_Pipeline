@@ -43,3 +43,9 @@ WHERE activation_status = 1
 GROUP BY 1
 ORDER BY 2 DESC
 LIMIT 5;
+
+
+SELECT country, SUM(monthly_revenue)
+FROM users
+GROUP BY 1
+ORDER BY 2 DESC;

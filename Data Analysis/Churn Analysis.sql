@@ -85,7 +85,7 @@ FROM users
 WHERE churned = 0
 ORDER BY 4 DESC;
 
--- Correlation Analysis --
+-- Churn Correlation Analysis --
 SELECT 'Total Sessions' AS metric, ( 
     (n * sum_xy - sum_x * sum_y) / 
     SQRT((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y))
@@ -103,7 +103,7 @@ FROM (
 
 UNION ALL
 
-SELECT 'Page Views', (
+SELECT 'Page Views', ( 
     (n * sum_xy - sum_x * sum_y) / 
     SQRT((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y))
 ) AS correlation
@@ -120,7 +120,41 @@ FROM (
 
 UNION ALL
 
-SELECT 'Days Active', (
+SELECT 'Download Clicks', ( 
+    (n * sum_xy - sum_x * sum_y) / 
+    SQRT((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y))
+) AS correlation
+FROM (
+    SELECT 
+        COUNT(*) AS n,
+        SUM(download_clicks) AS sum_x,
+        SUM(churned) AS sum_y,
+        SUM(download_clicks * churned) AS sum_xy,
+        SUM(download_clicks * download_clicks) AS sum_x2,
+        SUM(churned * churned) AS sum_y2
+    FROM users
+) AS stats
+
+UNION ALL
+
+SELECT 'Activation Status', ( 
+    (n * sum_xy - sum_x * sum_y) / 
+    SQRT((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y))
+) AS correlation
+FROM (
+    SELECT 
+        COUNT(*) AS n,
+        SUM(activation_status) AS sum_x,
+        SUM(churned) AS sum_y,
+        SUM(activation_status * churned) AS sum_xy,
+        SUM(activation_status * activation_status) AS sum_x2,
+        SUM(churned * churned) AS sum_y2
+    FROM users
+) AS stats
+
+UNION ALL
+
+SELECT 'Days Active', ( 
     (n * sum_xy - sum_x * sum_y) / 
     SQRT((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y))
 ) AS correlation
@@ -131,6 +165,23 @@ FROM (
         SUM(churned) AS sum_y,
         SUM(days_active * churned) AS sum_xy,
         SUM(days_active * days_active) AS sum_x2,
+        SUM(churned * churned) AS sum_y2
+    FROM users
+) AS stats
+
+UNION ALL
+
+SELECT 'Monthly Revenue', ( 
+    (n * sum_xy - sum_x * sum_y) / 
+    SQRT((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y))
+) AS correlation
+FROM (
+    SELECT 
+        COUNT(*) AS n,
+        SUM(monthly_revenue) AS sum_x,
+        SUM(churned) AS sum_y,
+        SUM(monthly_revenue * churned) AS sum_xy,
+        SUM(monthly_revenue * monthly_revenue) AS sum_x2,
         SUM(churned * churned) AS sum_y2
     FROM users
 ) AS stats;
