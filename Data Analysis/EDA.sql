@@ -60,3 +60,9 @@ SELECT MIN(install_date) start_install_date, MAX(install_date) end_install_date,
 	   MIN(last_active_date) start_last_active_date, MAX(last_active_date) end_last_active_date,
        MIN(pro_upgrade_date) start_pro_upgrade_date, MAX(pro_upgrade_date) end_pro_upgrade_date
 FROM users;
+
+-- Conversion Rate --
+SELECT COUNT(DISTINCT user_id) AS total_visitors,
+COUNT(DISTINCT CASE WHEN pro_upgrade_date IS NOT NULL THEN user_id END) AS total_conversions,
+ROUND((COUNT(DISTINCT CASE WHEN pro_upgrade_date IS NOT NULL THEN user_id END) / COUNT(DISTINCT user_id)) * 100, 2) AS conversion_rate
+FROM growth_data.users;
